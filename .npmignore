@@ -56,5 +56,8 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 
+<<<<<<< HEAD
 # Babel configuration file
+=======
+>>>>>>> Add .babelrc to gitignore
 .babelrc
