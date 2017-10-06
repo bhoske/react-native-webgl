@@ -1,11 +1,11 @@
 //@flow
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { WebGLView } from "react-native-webgl";
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { WebGLView } from 'react-native-webgl';
 
 export default class App extends React.Component {
   onContextCreate = (gl: WebGLRenderingContext) => {
-    const rngl = gl.getExtension("RN");
+    const rngl = gl.getExtension('RN');
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -73,9 +73,9 @@ void main() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   webglView: {
     width: 300,
