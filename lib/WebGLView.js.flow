@@ -1,14 +1,14 @@
 //@flow
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Platform,
   View,
   ViewPropTypes,
   requireNativeComponent
-} from "react-native";
-import RNExtension from "./RNExtension";
-import wrapGLMethods from "./wrapGLMethods";
+} from 'react-native';
+import RNExtension from './RNExtension';
+import wrapGLMethods from './wrapGLMethods';
 
 // Get the GL interface from an RNWebGLContextID and do JS-side setup
 const getGl = (ctxId: number): ?WebGLRenderingContext => {
@@ -27,7 +27,6 @@ const getGl = (ctxId: number): ?WebGLRenderingContext => {
     gl.__proto__ = global.WebGLRenderingContext.prototype;
   }
   wrapGLMethods(gl, RNExtension.createWithContext(gl, ctxId));
-
   gl.canvas = null;
 
   const viewport = gl.getParameter(gl.VIEWPORT);
@@ -67,9 +66,9 @@ export default class WebGLView extends React.Component {
     return (
       <View {...viewProps}>
         <WebGLView.NativeView
-          style={{ flex: 1, backgroundColor: "transparent" }}
+          style={{ flex: 1, backgroundColor: 'transparent' }}
           onSurfaceCreate={this.onSurfaceCreate}
-          msaaSamples={Platform.OS === "ios" ? msaaSamples : undefined}
+          msaaSamples={Platform.OS === 'ios' ? msaaSamples : undefined}
         />
       </View>
     );
@@ -84,7 +83,7 @@ export default class WebGLView extends React.Component {
     try {
       gl = getGl(ctxId);
       if (!gl) {
-        error = new Error("RNWebGL context creation failed");
+        error = new Error('RNWebGL context creation failed');
       }
     } catch (e) {
       error = e;
@@ -100,7 +99,7 @@ export default class WebGLView extends React.Component {
     }
   };
 
-  static NativeView = requireNativeComponent("RNWebGLView", WebGLView, {
+  static NativeView = requireNativeComponent('RNWebGLView', WebGLView, {
     nativeOnly: { onSurfaceCreate: true }
   });
 }
