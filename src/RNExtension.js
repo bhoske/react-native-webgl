@@ -29,7 +29,7 @@ export default {
   },
   createWithContext: (gl: RNWebGLRenderingContext, ctxId: number): Extension =>
     middlewares.reduce((ext, middleware) => middleware(ext), {
-      loadTexture: config => {
+      loadTexture: config =>
         // WARNING can only load 8 textures at a time
         // Loading 9 textures will break the app
         RNWebGLTextureManager.create({
@@ -38,8 +38,7 @@ export default {
         }).then(({ objId, width, height }) => {
           const texture = new RNWebGLTexture(objId);
           return { texture, width, height };
-        });
-      },
+        }),
       unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
       endFrame: gl.__endFrame.bind(gl)
     })
