@@ -1,4 +1,4 @@
-#import <UIKit/UIKit.h>
+/*#import <UIKit/UIKit.h>
 #import "RNWebGLTexture.h"
 #import "GPUImage.h"
 
@@ -8,3 +8,4 @@
                      withWidth:(int)width
                     withHeight:(int)height;
 @end
+*/

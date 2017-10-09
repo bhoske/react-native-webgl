@@ -1,7 +1,10 @@
 #import <UIKit/UIKit.h>
-#import "RNWebGLTextureWithGPUImage.h"
-#import "GPUImage.h"
+#import <GLKit/GLKit.h>
+//#import "RNWebGLTextureWithGPUImage.h"
+//#import "GPUImage.h"
+#import "RNWebGLTexture.h"
 
-@interface RNWebGLTextureUIImage: RNWebGLTextureWithGPUImage
-- (instancetype)initWithConfig:(NSDictionary *)config withImage:(UIImage *)image;
+@interface RNWebGLTextureUIImage: RNWebGLTexture
+//- (instancetype)initWithConfig:(NSDictionary *)config withImage:(UIImage *)image;
+- (instancetype)initWithConfig:(NSDictionary *)config withImageURL:(NSURL *)imageURL;
 @end

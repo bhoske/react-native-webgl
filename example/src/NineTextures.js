@@ -3,8 +3,11 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { WebGLView } from 'react-native-webgl';
 
-const sources = 'dJCLP8i,FCjy7mo,qZ7x4T5'
+// fixme: more than 8 textures will break the app on ios
+const sources = 'dJCLP8i,FCjy7mo,qZ7x4T5,5tzFC0S,gLM5zcp,qySet4z,jkIy32G,yKDiQ3Q'
+  // Numbers
   // const sources = 'dJCLP8i,FCjy7mo,qZ7x4T5,5tzFC0S,gLM5zcp,qySet4z,jkIy32G,yKDiQ3Q,hjUQEqe'
+  // Landscapes
   // const sources = 'bCH5IqY,myrmObg,vAysZ8m,fnNgaNK,aPOdTmT,sOHQVTW,kEuRMQp,MDL7KbV,R5gL6bu'
   .split(',')
   .map(id => `https://i.imgur.com/${id}.jpg`);
@@ -74,7 +77,7 @@ void main() {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.uniform1i(loc, i);
-        return rngl.loadTexture({ image, yflip: false }).then(({ texture }) => {
+        return rngl.loadTexture({ image, yflip: true }).then(({ texture }) => {
           // console.warn(i, texture);
           // gl.activeTexture(gl.TEXTURE0 + i);
           // gl.bindTexture(gl.TEXTURE_2D, texture);

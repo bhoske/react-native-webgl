@@ -8,7 +8,7 @@
 
 #import "RNWebGL.h"
 #import "RNWebGLTextureLoader.h"
-#import "GPUImage.h"
+//#import "GPUImage.h"
 
 @interface RNWebGLView ()
 
@@ -64,7 +64,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
 
     // Initialize GL context, view buffers will be created on layout event
     _eaglCtx = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2
-                                     sharegroup:GPUImageContext.sharedImageProcessingContext.context.sharegroup
+                                     //sharegroup:GPUImageContext.sharedImageProcessingContext.context.sharegroup
                 ];
     _msaaFramebuffer = _msaaRenderbuffer = _viewFramebuffer = _viewColorbuffer = _viewDepthStencilbuffer = 0;
 

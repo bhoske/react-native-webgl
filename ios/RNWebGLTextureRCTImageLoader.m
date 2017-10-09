@@ -29,7 +29,10 @@ RCT_EXPORT_MODULE()
                               partialLoadBlock:nil
                                completionBlock:^(NSError *error, UIImage *loadedImage) {
                                  void (^setImageBlock)(UIImage *) = ^(UIImage *image) {
-                                   RNWebGLTextureUIImage *obj = [[RNWebGLTextureUIImage alloc] initWithConfig:config withImage:image];
+//                                   RNWebGLTextureUIImage *obj = [[RNWebGLTextureUIImage alloc] initWithConfig:config withImage:image];
+//                                   callback(nil, obj);
+                                   NSURL *imageURL = [NSURL URLWithString:[config objectForKey:@"image"]];
+                                   RNWebGLTextureUIImage *obj = [[RNWebGLTextureUIImage alloc] initWithConfig:config withImageURL:imageURL];
                                    callback(nil, obj);
                                  };
                                  if (error) {

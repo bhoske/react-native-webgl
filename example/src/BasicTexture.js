@@ -34,8 +34,9 @@ precision highp float;
 varying vec2 uv;
 uniform sampler2D t;
 void main() {
-  gl_FragColor = mix(texture2D(t, uv),  vec4(1.0), min(pow(2.*uv.x-1.,6.)+pow(2.*uv.y-1.,6.)+ 0.1 * step(fract(20.*uv.y+cos(16.*uv.x)), 0.2), 1.0));
+  gl_FragColor = texture2D(t, uv);
 }`
+      // gl_FragColor = mix(texture2D(t, uv),  vec4(1.0), min(pow(2.*uv.x-1.,6.)+pow(2.*uv.y-1.,6.)+ 0.1 * step(fract(20.*uv.y+cos(16.*uv.x)), 0.2), 1.0));
     );
     gl.compileShader(fragmentShader);
     var program = gl.createProgram();
@@ -43,12 +44,18 @@ void main() {
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
     gl.useProgram(program);
-    var p = gl.getAttribLocation(program, "p");
+    var p = gl.getAttribLocation(program, 'p');
     gl.enableVertexAttribArray(p);
     gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
-    const tLocation = gl.getUniformLocation(program, "t");
+    const tLocation = gl.getUniformLocation(program, 't');
     rngl
-      .loadTexture({ image: "https://i.imgur.com/wxqlQkh.jpg", yflip: true })
+      // .loadTexture({
+      //   image:
+      //     'file:///var/mobile/Containers/Data/Application/D333B007-E6D3-4FAC-ACA3-D5A6EA030C3B/Documents/rgb_test.png',
+      //   yflip: true
+      // })
+      .loadTexture({ image: 'https://i.imgur.com/j8CvNl5.png', yflip: true })
+      // .loadTexture({ image: 'https://i.imgur.com/wxqlQkh.jpg', yflip: true })
       .then(({ texture }) => {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
