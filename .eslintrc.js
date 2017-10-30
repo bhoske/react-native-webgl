@@ -1,5 +1,5 @@
 module.exports = {
-  parser: "babel-eslint",
+  parser: 'babel-eslint',
   env: {
     browser: true,
     commonjs: true,
@@ -7,16 +7,16 @@ module.exports = {
     node: true
   },
   extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:flowtype/recommended"
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:flowtype/recommended'
   ],
-  plugins: ["react", "flowtype"],
+  plugins: ['react', 'flowtype'],
   rules: {
-    indent: ["error", 2],
-    "linebreak-style": ["error", "unix"],
-    quotes: ["error", "double"],
-    semi: ["error", "always"],
-    "no-console": ["error", { allow: ["warn", "error"] }]
+    indent: ['error', 2],
+    'linebreak-style': ['error', 'unix'],
+    quotes: ['error', 'single'],
+    semi: ['error', 'always'],
+    'no-console': ['error', { allow: ['warn', 'error'] }]
   }
 };
