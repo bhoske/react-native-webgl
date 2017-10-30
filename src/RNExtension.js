@@ -1,6 +1,6 @@
 //@flow
-import { NativeModules } from "react-native";
-import { RNWebGLTexture } from "./webglTypes";
+import { NativeModules } from 'react-native';
+import { RNWebGLTexture } from './webglTypes';
 const { RNWebGLTextureManager } = NativeModules;
 
 type RNWebGLRenderingContext = WebGLRenderingContext & {
