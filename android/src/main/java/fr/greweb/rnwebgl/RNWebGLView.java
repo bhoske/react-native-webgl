@@ -28,7 +28,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     reactContext = context;
 
     setEGLContextClientVersion(2);
-    setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+    setEGLConfigChooser(8, 8, 8, 8, 16, 8);
     getHolder().setFormat(PixelFormat.TRANSLUCENT);
     setRenderer(this);
   }
@@ -65,11 +65,14 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     }
     mEventQueue.clear();
 
+    // Call frame event after each frame is drawn
+    reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "frame", Arguments.createMap());
+
     // ctxId may be unset if we get here (on the GL thread) before RNWebGLContextCreate(...) is
     // called on the JS thread to create the RNWebGL context and save its id (see above in
     // the implementation of `onSurfaceCreated(...)`)
     if (ctxId > 0) {
-      RNWebGLContextFlush(ctxId);
+        RNWebGLContextFlush(ctxId);
     }
   }
 
