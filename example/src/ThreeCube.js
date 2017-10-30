@@ -1,16 +1,17 @@
 //@flow
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { WebGLView } from "react-native-webgl";
-import THREE from "./three";
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { WebGLView } from 'react-native-webgl';
+import THREE from './three';
 
 export default class App extends React.Component {
   requestId: *;
+  rotating = true;
   componentWillUnmount() {
     cancelAnimationFrame(this.requestId);
   }
   onContextCreate = (gl: WebGLRenderingContext) => {
-    const rngl = gl.getExtension("RN");
+    const rngl = gl.getExtension('RN');
 
     const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
     const renderer = new THREE.WebGLRenderer({
@@ -56,7 +57,9 @@ export default class App extends React.Component {
       this.requestId = requestAnimationFrame(animate);
       renderer.render(scene, camera);
 
-      cube.rotation.y += 0.05;
+      if (this.rotating) {
+        cube.rotation.y += 0.05;
+      }
 
       gl.flush();
       rngl.endFrame();
@@ -65,9 +68,13 @@ export default class App extends React.Component {
     init();
     animate();
   };
+  toggleRotation = () => {
+    this.rotating = !this.rotating;
+  };
+
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onTouchStart={this.toggleRotation}>
         <WebGLView
           style={styles.webglView}
           onContextCreate={this.onContextCreate}
@@ -80,9 +87,9 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   webglView: {
     width: 300,
