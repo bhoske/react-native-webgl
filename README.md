@@ -29,8 +29,9 @@ in your XCode project,
 
 react-native-webgl is implemented with some C++ bricks and `react-native link react-native-webgl` is not enough to install and configure your project for Android:
 
-- `android/local.properties`: Make sure you have Android NDK (needed to compile the Native C++ code) and that it's properly configured in ANDROID_NDK env or in `local.properties` file (e.g. `ndk.dir=/usr/local/opt/android-ndk-r10e`).
+- `android/local.properties`: Make sure you have an up-to-date [Android NDK](https://developer.android.com/ndk/guides/index.html) (needed to compile the Native C++ code) and that it's properly configured in ANDROID_NDK env or in `local.properties` file (e.g. `ndk.dir=/usr/local/share/android-ndk`).
 - `android/build.gradle`: If it's not already there, add `gradle-download-task` **buildscript** dependency: `classpath 'de.undercouch:gradle-download-task:3.1.2'` . If you don't do this, you will likely have `:downloadJSCHeaders` not working.
+- `android/app/build.gradle`: Make sure you have `minSdkVersion 17` or higher
 
 ## Usage
 
@@ -68,7 +69,7 @@ The first noticeable difference is the addition of an extension, called `"RN"` t
 
 - `endFrame()`: the mandatory call to get anything drawn on screen. It's the way to tell the current implementation everything is finished for the current frame. (we might later introduce better way)
 - `loadTexture(config)`: It is a way to load a `Texture` with a configuration object. For the config object format see Section **Texture Config Formats**.This function returns a **Promise of `{ texture, width, height }`** where texture is the actual `WebGLTexture` instance you can use in a `gl.bindTexture` and width and height is the texture dimension.
-- `unloadTexture(texture)`: allows to unload a texture with the texture object that was returned in a previous `loadTexture`.
+- `unloadTexture(texture)`: It is a way to unload a `Texture` with the texture object that was returned from a previous `loadTexture` call. This must be invoked when a texture is no longer required and when it can be removed, in order to avoid memory leaks. This is especially important when using your preferred library (such as three.js), as not only the objects created by your preferred library will need to be disposed, but the texture object itself needs to be unloaded. For an example of how to safely remove all references to textures, see this [memory leak issue](https://github.com/react-community/react-native-webgl/issues/23) discussion.
 
 #### Texture Config Formats
 

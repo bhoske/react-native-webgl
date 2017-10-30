@@ -14,6 +14,8 @@ import pkg from "react-native-webgl/package.json";
 import HelloGL from "./HelloGL";
 import NineTextures from "./NineTextures";
 import BasicTexture from "./BasicTexture";
+import ThreeCube from "./ThreeCube";
+import REGLBunny from "./REGLBunny";
 
 const ExampleRoutes = {
   HelloGL: {
@@ -27,6 +29,14 @@ const ExampleRoutes = {
   NineTextures: {
     description: "Simple Grid Example using 9 images",
     screen: NineTextures
+  },
+  ThreeCube: {
+    description: "Three.js Cube example",
+    screen: ThreeCube
+  },
+  REGLBunny: {
+    description: "regl bunny lighting example",
+    screen: REGLBunny
   }
 };
 
