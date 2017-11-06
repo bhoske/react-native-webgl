@@ -82,7 +82,7 @@ export default class App extends React.Component {
         <WebGLView
           style={styles.webglView}
           onContextCreate={this.onContextCreate}
-          onFrame={() => {
+          onDrawnFrame={() => {
             this.animate();
           }}
         />

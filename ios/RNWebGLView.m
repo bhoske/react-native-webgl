@@ -238,7 +238,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
     RNWebGLContextFlush(_ctxId);
       
     // onFrame callback
-    self.onFrame(@{});
+    self.onDrawnFrame(@{});
 
     // Present current state of view buffers
     // TODO(nikki): This should happen exactly at `endFrame()` in the queue

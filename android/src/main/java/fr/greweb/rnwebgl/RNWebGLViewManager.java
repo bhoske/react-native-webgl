@@ -26,7 +26,7 @@ public class RNWebGLViewManager extends SimpleViewManager<RNWebGLView> {
     return MapBuilder.of(
             "surfaceCreate",
             MapBuilder.of("registrationName", "onSurfaceCreate"),
-            "frame",
-            MapBuilder.of("registrationName", "onFrame"));
+            "frameDrawn",
+            MapBuilder.of("registrationName", "onDrawnFrame"));
   }
 }

@@ -65,16 +65,16 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     }
     mEventQueue.clear();
 
-    // Call frame event after each frame is drawn
-    WritableMap event = Arguments.createMap();
-    reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "frame", event);
-
     // ctxId may be unset if we get here (on the GL thread) before RNWebGLContextCreate(...) is
     // called on the JS thread to create the RNWebGL context and save its id (see above in
     // the implementation of `onSurfaceCreated(...)`)
     if (ctxId > 0) {
         RNWebGLContextFlush(ctxId);
     }
+
+    // Call frame event after each frame is drawn
+    WritableMap event = Arguments.createMap();
+    reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "frameDrawn", event);
   }
 
   public void onSurfaceChanged(GL10 unused, int width, int height) {

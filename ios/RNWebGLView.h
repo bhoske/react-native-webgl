@@ -7,6 +7,6 @@
 - (instancetype)initWithManager:(RNWebGLViewManager *)mgr;
 
 @property (nonatomic, copy) RCTDirectEventBlock onSurfaceCreate;
-@property (nonatomic, copy) RCTBubblingEventBlock onFrame;
+@property (nonatomic, copy) RCTBubblingEventBlock onDrawnFrame;
 
 @end
