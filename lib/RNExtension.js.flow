@@ -1,7 +1,8 @@
 //@flow
 import { NativeModules } from 'react-native';
 import { RNWebGLTexture } from './webglTypes';
-const { RNWebGLTextureManager } = NativeModules;
+
+const { RNWebGLTextureManager, RNWebGLLoopManager } = NativeModules;
 
 type RNWebGLRenderingContext = WebGLRenderingContext & {
   __endFrame: *,
@@ -40,6 +41,9 @@ export default {
           return { texture, width, height };
         }),
       unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
-      endFrame: gl.__endFrame.bind(gl)
+      endFrame: () => {
+        RNWebGLLoopManager.endFrame(ctxId);
+        gl.__endFrame();
+      }
     })
 };

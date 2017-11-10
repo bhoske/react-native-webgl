@@ -19,6 +19,7 @@ public class RNWebGLPackage implements ReactPackage {
         modules.add(new RNWebGLTextureManager(reactApplicationContext));
         modules.add(new RNWebGLTextureLoader(reactApplicationContext));
         modules.add(new RNWebGLTextureImageLoader(reactApplicationContext));
+        modules.add(new RNWebGLLoopManager(reactApplicationContext));
         return modules;
     }
 

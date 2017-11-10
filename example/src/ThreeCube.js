@@ -1,8 +1,8 @@
 //@flow
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { WebGLView } from "react-native-webgl";
-import THREE from "./three";
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { WebGLView } from 'react-native-webgl';
+import THREE from './three';
 
 export default class App extends React.Component {
   requestId: *;
@@ -33,7 +33,7 @@ export default class App extends React.Component {
     this.renderer.setClearColor(0x000000, 1);
 
     this.init(width, height);
-    // animate();
+    this.animate();
   };
   toggleRotation = () => {
     this.rotating = !this.rotating;
@@ -71,7 +71,7 @@ export default class App extends React.Component {
         this.cube.rotation.y += 0.05;
       }
 
-      const rngl = this.renderer.context.getExtension("RN");
+      const rngl = this.renderer.context.getExtension('RN');
       rngl.endFrame();
     }
   };
@@ -94,9 +94,9 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   webglView: {
     width: 300,
