@@ -26,4 +26,11 @@ public class RNWebGLLoopManager extends ReactContextBaseJavaModule {
         RNWebGLView.endFrame(ctxId);
     }
 
+    @ReactMethod
+    public void endLoop(final int ctxId) {
+        Log.w("webgl", "finish loop for ctxId: " + ctxId);
+        RNWebGLView.endLoop(ctxId);
+    }
+
+
 }

@@ -37,7 +37,8 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 
     private static SparseArray<RNWebGLView> mGLViewMap = new SparseArray<>();
     private ConcurrentLinkedQueue<Runnable> mEventQueue = new ConcurrentLinkedQueue<>();
-    private static AtomicBoolean readyToDraw = new AtomicBoolean(false);
+    private AtomicBoolean readyToDraw = new AtomicBoolean(false);
+    private AtomicBoolean loopEnded = new AtomicBoolean(false);
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         EGL14.eglSurfaceAttrib(EGL14.eglGetCurrentDisplay(), EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW),
@@ -87,15 +88,28 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
         readyToDraw.set(true);
     }
 
+    public void endLoop() {
+        Log.w("webgl", "ending loop in webgl context !");
+        loopEnded.set(true);
+    }
+
     public void onDrawFrame(GL10 unused) {
+        if(loopEnded.get()){
+            flush();
+            return;
+        }
         startFrame();
         //wait till JS has notified that the drawing is done
         Log.w("webgl", "thread in draw : " + Thread.currentThread().getName());
 
         while (!readyToDraw.get()) {
+            if(loopEnded.get()){
+                flush();
+                return;
+            }
             try {
                 Log.w("webgl", "Sleeping for ctxId : " + ctxId + ", not ready.");
-                Thread.sleep(1);
+                Thread.sleep(10);
                 flush();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -112,7 +126,9 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     }
 
     public void onDetachedFromWindow() {
+        Log.w("webgl", "detaching");
         mGLViewMap.remove(ctxId);
+        loopEnded.set(true);
         reactContext.getNativeModule(RNWebGLTextureLoader.class).unloadWithCtxId(ctxId);
         RNWebGLContextDestroy(ctxId);
         super.onDetachedFromWindow();
@@ -139,5 +155,16 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
             glView.endFrame();
         }
     }
+
+    public static void endLoop(int ctxId) {
+        Log.w("webgl", "ending frame");
+        RNWebGLView glView = mGLViewMap.get(ctxId);
+        Log.w("webgl", "thread in end frame :" + Thread.currentThread().getName());
+        if (glView != null) {
+            Log.w("webgl", "context found, ending frame");
+            glView.endLoop();
+        }
+    }
+
 
 }
