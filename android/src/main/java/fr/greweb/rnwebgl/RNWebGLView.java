@@ -5,6 +5,7 @@ import android.opengl.EGL14;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.SurfaceHolder;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
@@ -39,8 +40,10 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     private ConcurrentLinkedQueue<Runnable> mEventQueue = new ConcurrentLinkedQueue<>();
     private AtomicBoolean readyToDraw = new AtomicBoolean(false);
     private AtomicBoolean loopEnded = new AtomicBoolean(false);
+    private AtomicBoolean shouldDraw = new AtomicBoolean(true);
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+        Log.d("webgl", "surface created (renderer)");
         EGL14.eglSurfaceAttrib(EGL14.eglGetCurrentDisplay(), EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW),
                 EGL14.EGL_SWAP_BEHAVIOR, EGL14.EGL_BUFFER_PRESERVED);
 
@@ -90,36 +93,64 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 
     public void endLoop() {
         Log.w("webgl", "ending loop in webgl context !");
-        loopEnded.set(true);
+        shouldDraw.set(false);
+    }
+
+    public void onPause(){
+        Log.d("webgl", "pausing");
+        shouldDraw.set(false);
+        super.onPause();
+    }
+
+    public void onResume(){
+        Log.d("webgl", "resuming");
+        shouldDraw.set(true);
+        super.onResume();
+    }
+
+    public void surfaceDestroyed(SurfaceHolder holder){
+        Log.d("webgl", "destroyed");
+        shouldDraw.set(false);
+        super.surfaceDestroyed(holder);
+    }
+
+    public void surfaceCreated(SurfaceHolder holder){
+        Log.d("webgl", "created");
+        shouldDraw.set(true);
+        super.surfaceCreated(holder);
+    }
+
+    public void finalize() throws Throwable {
+        shouldDraw.set(false);
+        super.finalize();
     }
 
     public void onDrawFrame(GL10 unused) {
-        if(loopEnded.get()){
-            flush();
-            return;
-        }
-        startFrame();
-        //wait till JS has notified that the drawing is done
-        Log.w("webgl", "thread in draw : " + Thread.currentThread().getName());
-
-        while (!readyToDraw.get()) {
-            if(loopEnded.get()){
-                flush();
-                return;
+        if(shouldDraw.get()) {
+            //startFrame();
+            Log.w("webgl", "thread in draw : " + Thread.currentThread().getName());
+            while (!readyToDraw.get()) {
+                if (!shouldDraw.get()) {
+                    Log.d("webgl", "shouldn't have drawn, returning");
+                    //flush();
+                    return;
+                }
+                try {
+                    Log.w("webgl", "Sleeping for ctxId : " + ctxId + ", not ready.");
+                    Thread.sleep(100);
+                    flush();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            try {
-                Log.w("webgl", "Sleeping for ctxId : " + ctxId + ", not ready.");
-                Thread.sleep(10);
+            if (shouldDraw.get()) {
                 flush();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                Log.w("webgl", "frame ended");
+                readyToDraw.set(false);
             }
+        } else {
+            Log.d("webgl", "should not draw");
         }
-
-        Log.w("webgl", "drawing");
-        flush();
-        Log.w("webgl", "done drawing");
-        readyToDraw.set(false);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -128,7 +159,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     public void onDetachedFromWindow() {
         Log.w("webgl", "detaching");
         mGLViewMap.remove(ctxId);
-        loopEnded.set(true);
+        shouldDraw.set(false);
         reactContext.getNativeModule(RNWebGLTextureLoader.class).unloadWithCtxId(ctxId);
         RNWebGLContextDestroy(ctxId);
         super.onDetachedFromWindow();

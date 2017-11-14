@@ -58,13 +58,6 @@ export default class WebGLView extends React.Component<Props> {
 
   ctxId = -1;
 
-  componentWillUnmount() {
-    console.warn('unmounting with ctxId : ', this.ctxId);
-    if (this.ctxId > 0) {
-      RNExtension.endLoop(this.ctxId);
-    }
-  }
-
   render() {
     const {
       onContextCreate, // eslint-disable-line no-unused-vars
