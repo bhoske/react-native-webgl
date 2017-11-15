@@ -69,19 +69,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
 
     }
 
-    public void startFrame() {
-        reactContext.getJSModule(RCTEventEmitter.class)
-                .receiveEvent(getId(), "frameDrawn", Arguments.createMap());
-    }
-
     private void flush() {
-        // Flush any queued events
-        /*
-        for (Runnable r : mEventQueue) {
-            r.run();
-        }
-        mEventQueue.clear();*/
-
         // ctxId may be unset if we get here (on the GL thread) before RNWebGLContextCreate(...) is
         // called on the JS thread to create the RNWebGL context and save its id (see above in
         // the implementation of `onSurfaceCreated(...)`)
@@ -90,7 +78,7 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
         }
     }
 
-    public void endFrame() {
+    void endFrame() {
         requestRender();
     }
 
@@ -106,14 +94,10 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
         super.onDetachedFromWindow();
     }
 
-    synchronized void runOnGLThread(Runnable r) {
-        queueEvent(r);
-    }
-
     public synchronized static void runOnGLThread(int ctxId, Runnable r) {
         RNWebGLView glView = mGLViewMap.get(ctxId);
         if (glView != null) {
-            glView.runOnGLThread(r);
+            glView.queueEvent(r);
         }
     }
 
@@ -123,15 +107,6 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
         if (glView != null) {
             glView.endFrame();
         }
-    }
-
-
-    public void onPause(){
-        super.onPause();
-    }
-
-    public void onResume(){
-        super.onResume();
     }
 
     private class FlushThread extends Thread {
