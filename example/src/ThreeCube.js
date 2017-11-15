@@ -73,6 +73,7 @@ export default class App extends React.Component {
 
       const rngl = this.renderer.context.getExtension('RN');
       rngl.endFrame();
+      requestAnimationFrame(this.animate);
     }
   };
 
@@ -82,9 +83,6 @@ export default class App extends React.Component {
         <WebGLView
           style={styles.webglView}
           onContextCreate={this.onContextCreate}
-          onDrawnFrame={() => {
-            this.animate();
-          }}
         />
       </View>
     );

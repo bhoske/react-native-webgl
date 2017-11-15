@@ -1,5 +1,7 @@
 package fr.greweb.rnwebgl;
 
+import android.opengl.GLSurfaceView;
+
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -18,7 +20,10 @@ public class RNWebGLViewManager extends SimpleViewManager<RNWebGLView> {
 
   @Override
   public RNWebGLView createViewInstance(ThemedReactContext context) {
-    return new RNWebGLView(context);
+    RNWebGLView view = new RNWebGLView(context);
+    view.setRenderer(view);
+    view.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+    return view;
   }
 
   @Override

@@ -1,5 +1,5 @@
 //@flow
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import { RNWebGLTexture } from './webglTypes';
 
 const { RNWebGLTextureManager, RNWebGLLoopManager } = NativeModules;
@@ -42,7 +42,9 @@ export default {
         }),
       unloadTexture: texture => RNWebGLTextureManager.destroy(texture.id),
       endFrame: () => {
-        RNWebGLLoopManager.endFrame(ctxId);
+        if (Platform.OS === 'android') {
+          RNWebGLLoopManager.endFrame(ctxId);
+        }
         gl.__endFrame();
       }
     })

@@ -7,7 +7,9 @@ export default class App extends React.Component {
   onContextCreate = (gl: WebGLRenderingContext) => {
     console.warn('context created');
     const rngl = gl.getExtension('RN');
+    console.warn('got extension, calling first gl');
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    console.warn('wrote gl');
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(
