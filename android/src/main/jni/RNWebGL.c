@@ -3,6 +3,13 @@
 #include <JavaScriptCore/JSContextRef.h>
 #include "RNWebGL.h"
 
+
+JNIEXPORT void JNICALL
+Java_fr_greweb_rnwebgl_RNWebGL_RNWebGLInit
+(JNIEnv *env, jclass clazz) {
+  InitJVM(env);
+}
+
 JNIEXPORT jint JNICALL
 Java_fr_greweb_rnwebgl_RNWebGL_RNWebGLContextCreate
 (JNIEnv *env, jclass clazz, jlong jsCtxPtr) {

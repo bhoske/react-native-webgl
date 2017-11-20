@@ -81,6 +81,8 @@ private:
   std::vector<Batch> backlog;
   std::mutex backlogMutex;
 
+  RNWebGLContextId ctxId;
+
   // [JS thread] Send the current 'next' batch to GL and make a new 'next' batch
   void endNextBatch() noexcept {
     std::lock_guard<decltype(backlogMutex)> lock(backlogMutex);
@@ -119,6 +121,8 @@ private:
     {
       std::unique_lock<decltype(mutex)> lock(mutex);
       endNextBatch();
+      // for android, we ask for a flush so that the method yields immediately and we can actually end the frame
+      requestFlush(ctxId);
       cv.wait(lock, [&] { return done; });
     }
 #else
@@ -202,13 +206,14 @@ private:
   JSObjectRef jsGl;
 
 public:
-  RNWebGLContext(JSGlobalContextRef jsCtx, RNWebGLContextId ctxId) {
+  RNWebGLContext(JSGlobalContextRef jsCtx, RNWebGLContextId _ctxId) {
+    ctxId = _ctxId;
     // Prepare for TypedArray usage
     prepareTypedArrayAPI(jsCtx);
 
     // Create JS version of us
     auto jsClass = JSClassCreate(&kJSClassDefinitionEmpty);
-    jsGl = JSObjectMake(jsCtx, jsClass, (void *) (intptr_t) ctxId);
+    jsGl = JSObjectMake(jsCtx, jsClass, (void *) (intptr_t) _ctxId);
     JSClassRelease(jsClass);
     installMethods(jsCtx);
     installConstants(jsCtx);
@@ -1823,6 +1828,11 @@ std::atomic_uint RNWebGLContext::nextObjectId { 1 };
 static std::unordered_map<RNWebGLContextId, RNWebGLContext *> RNWebGLContextMap;
 static std::mutex RNWebGLContextMapMutex;
 static RNWebGLContextId RNWebGLContextNextId = 1;
+static JavaVM *jvm;
+
+void InitJVM(JNIEnv *env) {
+  env->GetJavaVM(&jvm);
+}
 
 static RNWebGLContext *RNWebGLContextGet(RNWebGLContextId ctxId) {
   std::lock_guard<decltype(RNWebGLContextMapMutex)> lock(RNWebGLContextMapMutex);
@@ -1916,4 +1926,13 @@ void RNWebGLContextMapObject(RNWebGLContextId ctxId, RNWebGLTextureId objId, GLu
   if (exglCtx) {
     exglCtx->mapObject(objId, glObj);
   }
+}
+
+
+void requestFlush(RNWebGLContextId ctxId) {
+  JNIEnv *env = nullptr;
+  jvm->AttachCurrentThread(&env, NULL);
+  jclass cls = env->FindClass("fr/greweb/rnwebgl/RNWebGL");
+  jmethodID mid = env->GetStaticMethodID(cls, "requestFlush", "(I)V");
+  env->CallStaticVoidMethod(cls, mid, ctxId);
 }

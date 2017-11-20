@@ -9,6 +9,8 @@
 #include <OpenGLES/ES2/gl.h>
 #endif
 
+#include <jni.h>
+
 #include <JavaScriptCore/JSBase.h>
 
 
@@ -25,6 +27,9 @@ extern "C" {
 // Identifies an RNWebGL context. No RNWebGL context has the id 0, so that can be
 // used as a 'null' value.
 typedef unsigned int RNWebGLContextId;
+
+//initializes the jvm, used to flush
+void InitJVM(JNIEnv *env);
 
 // [JS thread] Create an RNWebGL context and return its id number. Saves the
 // JavaScript interface object (has a WebGLRenderingContext-style API) at
@@ -55,6 +60,8 @@ void RNWebGLContextDestroyObject(RNWebGLContextId ctxId, RNWebGLTextureId id);
 
 // [GL thread] Set the underlying OpenGL object an RNWebGL object maps to.
 void RNWebGLContextMapObject(RNWebGLContextId ctxId, RNWebGLTextureId id, GLuint glObj);
+
+void requestFlush(RNWebGLContextId id);
     
 #ifdef __cplusplus
 }

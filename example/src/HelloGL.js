@@ -5,11 +5,8 @@ import { WebGLView } from 'react-native-webgl';
 
 export default class App extends React.Component {
   onContextCreate = (gl: WebGLRenderingContext) => {
-    console.warn('context created');
     const rngl = gl.getExtension('RN');
-    console.warn('got extension, calling first gl');
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    console.warn('wrote gl');
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(
@@ -51,7 +48,6 @@ void main() {
     gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     gl.flush();
-    console.warn('ending frame from inside');
     rngl.endFrame();
   };
   render() {

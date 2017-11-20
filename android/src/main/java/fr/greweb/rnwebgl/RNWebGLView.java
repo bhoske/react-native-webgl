@@ -5,16 +5,12 @@ import android.opengl.EGL14;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.SurfaceHolder;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,8 +32,6 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     }
 
     private static SparseArray<RNWebGLView> mGLViewMap = new SparseArray<>();
-    //private ConcurrentLinkedQueue<Runnable> mEventQueue = new ConcurrentLinkedQueue<>();
-    private FlushThread flushThread;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         EGL14.eglSurfaceAttrib(EGL14.eglGetCurrentDisplay(), EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW),
@@ -60,8 +54,6 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
             });
             onSurfaceCreateCalled = true;
         }
-        flushThread = new FlushThread();
-        flushThread.start();
     }
 
     @Override
@@ -89,7 +81,6 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
     public void onDetachedFromWindow() {
         mGLViewMap.remove(ctxId);
         reactContext.getNativeModule(RNWebGLTextureLoader.class).unloadWithCtxId(ctxId);
-        flushThread.interrupt();
         RNWebGLContextDestroy(ctxId);
         super.onDetachedFromWindow();
     }
@@ -109,24 +100,16 @@ public class RNWebGLView extends GLSurfaceView implements GLSurfaceView.Renderer
         }
     }
 
-    private class FlushThread extends Thread {
-        @Override
-        public void run(){
-            while (true) {
-                queueEvent(new Runnable() {
-                    @Override
-                    public void run() {
-                        flush();
-                    }
-                });
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    return;
+    public static void requestFlush(final int ctxId){
+        final RNWebGLView glView = mGLViewMap.get(ctxId);
+        if (glView != null) {
+            glView.queueEvent(new Runnable() {
+                @Override
+                public void run() {
+                    glView.flush();
                 }
-            }
+            });
         }
     }
-
 
 }
