@@ -39,7 +39,6 @@ const getGl = (ctxId: number): ?WebGLRenderingContext => {
 type Props = {
   onContextCreate: (gl: WebGLRenderingContext) => void,
   onContextFailure?: (e: Error) => void,
-  onDrawnFrame: () => void,
   msaaSamples: number
 };
 
@@ -47,7 +46,6 @@ export default class WebGLView extends React.Component<Props> {
   static propTypes = {
     onContextCreate: PropTypes.func,
     onContextFailure: PropTypes.func,
-    onDrawnFrame: PropTypes.func,
     msaaSamples: PropTypes.number,
     ...ViewPropTypes
   };
@@ -62,7 +60,6 @@ export default class WebGLView extends React.Component<Props> {
     const {
       onContextCreate, // eslint-disable-line no-unused-vars
       onContextFailure, // eslint-disable-line no-unused-vars
-      onDrawnFrame, // eslint-disable-line no-unused-vars
       msaaSamples,
       ...viewProps
     } = this.props;
@@ -74,7 +71,6 @@ export default class WebGLView extends React.Component<Props> {
         <WebGLView.NativeView
           style={{ flex: 1, backgroundColor: 'transparent' }}
           onSurfaceCreate={this.onSurfaceCreate}
-          onDrawnFrame={this.onDrawnFrame}
           msaaSamples={Platform.OS === 'ios' ? msaaSamples : undefined}
         />
       </View>
@@ -105,13 +101,6 @@ export default class WebGLView extends React.Component<Props> {
     } else if (gl && this.props.onContextCreate) {
       this.props.onContextCreate(gl);
     }
-  };
-
-  onDrawnFrame = (): void => {
-    if (!this.props.onDrawnFrame) {
-      return;
-    }
-    this.props.onDrawnFrame();
   };
 
   static NativeView = requireNativeComponent('RNWebGLView', WebGLView, {

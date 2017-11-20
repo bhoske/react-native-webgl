@@ -237,9 +237,6 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init);
     RNWebGLContextSetDefaultFramebuffer(_ctxId, _msaaFramebuffer);
     RNWebGLContextFlush(_ctxId);
       
-    // onFrame callback
-    self.onDrawnFrame(@{});
-
     // Present current state of view buffers
     // TODO(nikki): This should happen exactly at `endFrame()` in the queue
     if (_viewColorbuffer != 0)
