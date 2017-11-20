@@ -4,12 +4,11 @@
 
 #ifdef __ANDROID__
 #include <GLES2/gl2.h>
+#include <jni.h>
 #endif
 #ifdef __APPLE__
 #include <OpenGLES/ES2/gl.h>
 #endif
-
-#include <jni.h>
 
 #include <JavaScriptCore/JSBase.h>
 
@@ -28,8 +27,6 @@ extern "C" {
 // used as a 'null' value.
 typedef unsigned int RNWebGLContextId;
 
-//initializes the jvm, used to flush
-void InitJVM(JNIEnv *env);
 
 // [JS thread] Create an RNWebGL context and return its id number. Saves the
 // JavaScript interface object (has a WebGLRenderingContext-style API) at
@@ -61,8 +58,13 @@ void RNWebGLContextDestroyObject(RNWebGLContextId ctxId, RNWebGLTextureId id);
 // [GL thread] Set the underlying OpenGL object an RNWebGL object maps to.
 void RNWebGLContextMapObject(RNWebGLContextId ctxId, RNWebGLTextureId id, GLuint glObj);
 
+#ifdef __ANDROID__
+//initializes the jvm, used to flush
+void InitJVM(JNIEnv *env);
+
 void requestFlush(RNWebGLContextId id);
-    
+#endif
+
 #ifdef __cplusplus
 }
 #endif

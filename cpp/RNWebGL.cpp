@@ -1828,11 +1828,21 @@ std::atomic_uint RNWebGLContext::nextObjectId { 1 };
 static std::unordered_map<RNWebGLContextId, RNWebGLContext *> RNWebGLContextMap;
 static std::mutex RNWebGLContextMapMutex;
 static RNWebGLContextId RNWebGLContextNextId = 1;
+#ifdef __ANDROID__
 static JavaVM *jvm;
 
 void InitJVM(JNIEnv *env) {
   env->GetJavaVM(&jvm);
 }
+  
+void requestFlush(RNWebGLContextId ctxId) {
+  JNIEnv *env = nullptr;
+  jvm->AttachCurrentThread(&env, NULL);
+  jclass cls = env->FindClass("fr/greweb/rnwebgl/RNWebGL");
+  jmethodID mid = env->GetStaticMethodID(cls, "requestFlush", "(I)V");
+  env->CallStaticVoidMethod(cls, mid, ctxId);
+}
+#endif
 
 static RNWebGLContext *RNWebGLContextGet(RNWebGLContextId ctxId) {
   std::lock_guard<decltype(RNWebGLContextMapMutex)> lock(RNWebGLContextMapMutex);
@@ -1926,13 +1936,4 @@ void RNWebGLContextMapObject(RNWebGLContextId ctxId, RNWebGLTextureId objId, GLu
   if (exglCtx) {
     exglCtx->mapObject(objId, glObj);
   }
-}
-
-
-void requestFlush(RNWebGLContextId ctxId) {
-  JNIEnv *env = nullptr;
-  jvm->AttachCurrentThread(&env, NULL);
-  jclass cls = env->FindClass("fr/greweb/rnwebgl/RNWebGL");
-  jmethodID mid = env->GetStaticMethodID(cls, "requestFlush", "(I)V");
-  env->CallStaticVoidMethod(cls, mid, ctxId);
 }
