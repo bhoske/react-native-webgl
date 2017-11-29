@@ -16,17 +16,14 @@ public class RNWebGLTextureBitmap extends RNWebGLTexture implements Runnable {
     public RNWebGLTextureBitmap(ReadableMap config, Bitmap source) {
         super(config, source.getWidth(), source.getHeight());
         boolean yflip = config.hasKey("yflip") && config.getBoolean("yflip");
-        Bitmap src;
         if (yflip) {
             Matrix matrix = new Matrix();
             matrix.postScale(1, -1);
-            src = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-            src.setHasAlpha(source.hasAlpha());
+            bitmap = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+            bitmap.setHasAlpha(source.hasAlpha());
+        } else {
+            bitmap = source.copy(source.getConfig(), source.isMutable());
         }
-        else {
-            src = source;
-        }
-        bitmap = src.copy(src.getConfig(), src.isMutable());
         this.runOnGLThread(this);
     }
 
